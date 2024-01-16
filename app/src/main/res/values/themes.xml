@@ -1,0 +1,18 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <!--    app compat זה הירושה שהאקטיביטיז משתמשים בו וה base זה העיצוב הבסיסי ביותר של אנדרואיד-->
+    <style name="Base.Theme.FinanceApp001" parent="Theme.AppCompat.DayNight.DarkActionBar">
+
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
+
+    </style>
+
+
+    <style name="Widget.App.Button" parent="Widget.AppCompat.Button">
+        <item name="backgroundTint">@color/white</item>
+    </style>
+
+    <style name="Theme.FinanceApp001" parent="Base.Theme.FinanceApp001" />
+</resources>
