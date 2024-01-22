@@ -67,4 +67,6 @@ public class Start extends AppCompatActivity implements View.OnClickListener  {
         }
 
     }
+
+    // todo create a public static function that save the user inside shared_preferences.
 }
