@@ -6,7 +6,9 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,6 +28,7 @@ public class Start extends AppCompatActivity implements View.OnClickListener  {
 
     LogInFragment logInFragment; //הפרגמנט של הכניסה
     LinearLayout layout;
+
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -51,7 +54,6 @@ public class Start extends AppCompatActivity implements View.OnClickListener  {
             }
         });
 
-
     }
 
 
@@ -68,5 +70,5 @@ public class Start extends AppCompatActivity implements View.OnClickListener  {
 
     }
 
-    // todo create a public static function that save the user inside shared_preferences.
+
 }

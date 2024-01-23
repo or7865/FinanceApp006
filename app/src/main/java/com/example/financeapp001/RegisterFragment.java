@@ -1,7 +1,9 @@
 package com.example.financeapp001;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -32,6 +34,7 @@ public class RegisterFragment extends Fragment {
     DBHelper dbHelper;
     SQLiteDatabase db;
     User u;
+    SharedPreferences pref;
 
     public RegisterFragment( LinearLayout layout,FrameLayout frameLayout){
         this.layout=layout;
@@ -77,6 +80,15 @@ public class RegisterFragment extends Fragment {
                     db = dbHelper.getWritableDatabase(); //גישה לכתיבה בטבלה
                     db.insert(DBHelper.TABLE_NAME, null, cv);
                     db.close(); //סגירת הגישה
+
+                    //מחסן הנתונים
+                    pref= getActivity().getSharedPreferences("userPre", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor= pref.edit();
+                    editor.putString("name",name.getText().toString());
+                    editor.putString("userName",user.getText().toString());
+                    editor.putString("password",pass.getText().toString());
+                    editor.apply();
+
                     //לרוקן הכל למשתמש הבא
                     name.setText("");
                     LastName.setText("");
@@ -85,11 +97,16 @@ public class RegisterFragment extends Fragment {
                     female.setChecked(false);
                     male.setChecked(true);
 
+                    //בדיקה שהפרטים נכנסו למחסן נבדוק אם השם ונוסיף ערך דיפולטי
+                    //Toast.makeText(getActivity(), sharedPreferences.getString("name","0"), Toast.LENGTH_LONG).show();
+
                     Intent go = new Intent(getActivity(), HomePage.class);
                     startActivity(go);
                 }
             }
         });
+
+
         return v;
     }
 
@@ -114,6 +131,7 @@ public class RegisterFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+    //תיעוד- פונציה שבודקת האם המשתמש נמצא במערכת והוא כבר נרשם אם כן שולחת לו הודעה מתאימה אם לא מכניסה אותו לעצם ולדטא בייס
     private boolean foundUser() {
         dbHelper = new DBHelper(getActivity()); //יצירת עצם חדש
         db = dbHelper.getReadableDatabase(); //לקרוא מהטבלה
@@ -121,7 +139,7 @@ public class RegisterFragment extends Fragment {
         c.moveToFirst();
         int x = c.getColumnIndex(dbHelper.STUD_USERNAME);
         while (!c.isAfterLast()) { //בודק את כל השורות בטבלה
-            if (c.getString(x).equals(user.getText())) {
+            if (c.getString(x).equals(user.getText().toString())) {
                 return true; //המשתמש נמצא
             }
             c.moveToNext(); //עובר לשורה הבאה
@@ -130,5 +148,6 @@ public class RegisterFragment extends Fragment {
         db.close(); //לסגור גישה
         return false; //המשתמש לא נמצא
     }
+
 
 }
