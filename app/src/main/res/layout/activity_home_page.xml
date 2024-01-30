@@ -1,11 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
     android:orientation="vertical"
-    tools:context=".HomePage">
+    tools:context=".HomePage"
 
-</LinearLayout>
+    >
+
+    <TextView
+        android:id="@+id/currentSum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/back"
+        android:text="0"
+        android:textColor="@color/white"
+        android:textSize="120dp" />
+
+    <Button
+        android:id="@+id/input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/white"
+        android:text="enter income"
+        android:layout_below="@+id/currentSum"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        />
+<!--    End and Start meant for ltr or rtl app options-->
+
+    <Button
+        android:id="@+id/remove"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/white"
+        android:text="enter outcome"
+        android:layout_below="@+id/input"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:id="@+id/MoreOptions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:text="click here for more options"
+        android:layout_below="@+id/remove"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/back"
+        android:layout_marginTop="12dp"
+        />
+
+    <Button
+        android:id="@+id/Info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/white"
+        android:text="show details"
+        android:layout_below="@+id/MoreOptions"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/circle"
+        android:layout_centerHorizontal="true"
+        />
+<!--    android:layout_alignParentEnd="true"-->
+
+    <TextView
+        android:id="@+id/DailyTip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="click here for the daily tip"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"/>
+</RelativeLayout>

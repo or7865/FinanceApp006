@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -70,5 +71,17 @@ public class Start extends AppCompatActivity implements View.OnClickListener  {
 
     }
 
+    // Override the keys default action to what we want it to do and then chose if the key will also do what it intended...
+   //זו פעולה שאחראית לכל המקשים של המקלדת ומה יקרה אם נלחץ עליהם
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+       //אם מה שקיבלנו תואם לכפתור של הבק למטה בטלפון ולחצו עליו- המחלקה של ה KeyEvent יודעת לזהות את זה
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            //זה יצא מהאפליקציה כי זה המסך ההתחלתי
+            finishAffinity();
+            return true;
+        }
 
+        return super.onKeyDown(keyCode, event);
+    }
 }

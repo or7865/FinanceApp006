@@ -19,6 +19,13 @@ public class DBHelper extends SQLiteOpenHelper {
     public  static final String STUD_GENDER="gender";
 
 
+    public static final String TABLE_NAME2 = "financial_actions";
+    public static final String AC_DATE="date";
+    public  static final String AC_SUM="sum";
+    public static final String AC_REASON="reason";
+    public static final String AC_USER="user";
+
+
     public DBHelper(@Nullable Context context) {
         super(context, "users.db", null, 1);
     }
@@ -33,6 +40,14 @@ public class DBHelper extends SQLiteOpenHelper {
         s+=STUD_PASS+" TEXT, ";
         s+= STUD_GENDER+ " TEXT);";
         db.execSQL(s);
+
+        //AC->action
+       s="CREATE TABLE "+TABLE_NAME2+" (";
+        s+=AC_DATE+" TEXT, ";
+        s+=AC_SUM+" TEXT, ";
+        s+=AC_REASON+" TEXT, ";
+        s+=AC_USER+" TEXT, ";
+        db.execSQL(s);
     }
 
 
@@ -41,6 +56,10 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
         String st = "DROP TABLE IF EXISTS "+ TABLE_NAME;
         db.execSQL(st);
+        onCreate(db);
+
+        String ac= "DROP TABLE IF EXISTS "+ TABLE_NAME2;
+        db.execSQL(ac);
         onCreate(db);
     }
 }
