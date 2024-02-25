@@ -11,7 +11,7 @@
     >
 
     <TextView
-        android:id="@+id/currentSum"
+        android:id="@+id/tvCurrentSum"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -21,58 +21,64 @@
         android:textSize="120dp" />
 
     <Button
-        android:id="@+id/input"
+        android:id="@+id/btnInput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/white"
         android:text="enter income"
-        android:layout_below="@+id/currentSum"
+        android:layout_below="@+id/tvCurrentSum"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         />
-<!--    End and Start meant for ltr or rtl app options-->
+<!--    End and Start meant for ltr or rtl app options -כדי שזה ילך לאמצע אבל מתחת לסכום העכשווי צריך סנטר הוריזונטל-->
 
     <Button
-        android:id="@+id/remove"
+        android:id="@+id/btnRemove"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/white"
         android:text="enter outcome"
-        android:layout_below="@+id/input"
+        android:layout_below="@+id/btnInput"
         android:layout_centerHorizontal="true"/>
+<!--below=מתחת לאיזה רכיב אני שמה את הרכיב הזה! ואם מורידים אחד למטה כולם יורדים ביחד!!-->
 
     <TextView
-        android:id="@+id/MoreOptions"
+        android:id="@+id/tvMoreOptions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:text="click here for more options"
-        android:layout_below="@+id/remove"
+        android:textColor="@color/gray"
+        android:text="@string/click_here"
+        android:layout_below="@+id/btnRemove"
         android:layout_centerHorizontal="true"
         android:background="@drawable/back"
         android:layout_marginTop="12dp"
+        android:clickable="true"
         />
 
     <Button
-        android:id="@+id/Info"
+        android:id="@+id/btnInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/white"
         android:text="show details"
-        android:layout_below="@+id/MoreOptions"
-        android:layout_marginTop="50dp"
+        android:layout_below="@+id/tvMoreOptions"
+        android:layout_marginTop="40dp"
         android:background="@drawable/circle"
         android:layout_centerHorizontal="true"
         />
 <!--    android:layout_alignParentEnd="true"-->
 
     <TextView
-        android:id="@+id/DailyTip"
+        android:id="@+id/tvDailyTip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="click here for the daily tip"
         android:textColor="@color/white"
         android:textSize="20dp"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        />
+
+
+
 </RelativeLayout>

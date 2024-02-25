@@ -17,6 +17,9 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String STUD_USERNAME="username";
     public static final String STUD_PASS = "password";
     public  static final String STUD_GENDER="gender";
+    public static final String STUD_DATE_OF_DOWNLOAD="download";
+    public static final String STUD_DATE_OF_SALARY="salary";
+
 
 
     public static final String TABLE_NAME2 = "financial_actions";
@@ -24,6 +27,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public  static final String AC_SUM="sum";
     public static final String AC_REASON="reason";
     public static final String AC_USER="user";
+    public static final String AC_KIND_OF_ACTION="kind";
 
 
     public DBHelper(@Nullable Context context) {
@@ -38,7 +42,8 @@ public class DBHelper extends SQLiteOpenHelper {
         s+=STUD_LNAME+" TEXT, ";
         s+=STUD_USERNAME+" TEXT, ";
         s+=STUD_PASS+" TEXT, ";
-        s+= STUD_GENDER+ " TEXT);";
+        s+=STUD_GENDER+" TEXT, ";
+        s+=STUD_DATE_OF_SALARY+" TEXT);";
         db.execSQL(s);
 
         //AC->action
@@ -47,6 +52,7 @@ public class DBHelper extends SQLiteOpenHelper {
         s+=AC_SUM+" TEXT, ";
         s+=AC_REASON+" TEXT, ";
         s+=AC_USER+" TEXT, ";
+        s+=AC_KIND_OF_ACTION+" TEXT);";
         db.execSQL(s);
     }
 

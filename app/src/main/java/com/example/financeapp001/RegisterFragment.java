@@ -35,6 +35,7 @@ public class RegisterFragment extends Fragment {
     SQLiteDatabase db;
     User u;
     SharedPreferences pref;
+    public static final String USER_PREF ="userPref";
 
     public RegisterFragment( LinearLayout layout,FrameLayout frameLayout){
         this.layout=layout;
@@ -67,6 +68,8 @@ public class RegisterFragment extends Fragment {
                     else
                         s = "male";
 
+
+
                     u = new User(name.getText().toString(), LastName.getText().toString(), user.getText().toString(), pass.getText().toString(), s);
                     ContentValues cv = new ContentValues(); //עצם לכתיבה בטבלה
                     dbHelper = new DBHelper(getActivity());
@@ -76,13 +79,13 @@ public class RegisterFragment extends Fragment {
                     cv.put(DBHelper.STUD_USERNAME,u.getUser());
                     cv.put(DBHelper.STUD_PASS,u.getPass());
                     cv.put(DBHelper.STUD_GENDER,u.getGender());
-
+                    cv.put(DBHelper.STUD_DATE_OF_SALARY,"");
                     db = dbHelper.getWritableDatabase(); //גישה לכתיבה בטבלה
                     db.insert(DBHelper.TABLE_NAME, null, cv);
                     db.close(); //סגירת הגישה
 
                     //מחסן הנתונים
-                    pref= getActivity().getSharedPreferences("userPre", Context.MODE_PRIVATE);
+                    pref= getActivity().getSharedPreferences(RegisterFragment.USER_PREF, Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor= pref.edit();
                     editor.putString("name",name.getText().toString());
                     editor.putString("userName",user.getText().toString());

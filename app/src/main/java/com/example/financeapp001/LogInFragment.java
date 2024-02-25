@@ -1,6 +1,8 @@
 package com.example.financeapp001;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -93,10 +95,20 @@ public class LogInFragment extends Fragment {
         c.moveToFirst();
         int x1 = c.getColumnIndex(DBHelper.STUD_USERNAME);
         int x2= c.getColumnIndex(DBHelper.STUD_PASS);
+        int x3 = c.getColumnIndex(DBHelper.STUD_FNAME);
+
+
         while (!c.isAfterLast()) { //בודק את כל השורות בטבלה
                //שהשם משתמש והסיסמה תואמים למה שהמשתמש הכניס
-            if (c.getString(x1).equals(userName.getText().toString()) && c.getString(x2).equals(password.getText().toString()))
+            if (c.getString(x1).equals(userName.getText().toString()) && c.getString(x2).equals(password.getText().toString())) {
+                SharedPreferences pref= getActivity().getSharedPreferences(RegisterFragment.USER_PREF, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor= pref.edit();
+                editor.putString("name",c.getString(x3));
+                editor.putString("userName",c.getString(x1));
+                editor.putString("password",c.getString(x2));
+                editor.apply();
                 return true; //המשתמש נמצא
+            }
 
             c.moveToNext(); //עובר לשורה הבאה
         }
