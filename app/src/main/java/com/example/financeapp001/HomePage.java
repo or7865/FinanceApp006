@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -94,7 +95,52 @@ public class HomePage extends AppCompatActivity {
                 startActivity(i);
             }
         });
+
     }
+
+    //מכניסה את המשכורת כל חודש באופן אוטומטי
+    public void handleSalary(){
+        String today = DateTimeFormatter.ofPattern("dd/MM/yyyy").format(LocalDateTime.now());
+
+        dbHelper = new DBHelper(HomePage.this); //יצירת עצם חדש
+        db = dbHelper.getWritableDatabase(); //לקרוא מהטבלה
+        Cursor c = db.query(DBHelper.TABLE_NAME, null, null, null, null, null, null, null);
+        c.moveToFirst();
+        int x1 = c.getColumnIndex(DBHelper.AC_USER);
+        int x2= c.getColumnIndex(DBHelper.AC_KIND_OF_ACTION);
+        int x3= c.getColumnIndex(DBHelper.AC_SALARY_ADDED_COUNTER);
+        int x4= c.getColumnIndex(DBHelper.AC_INSERT_TIME);
+
+        while (!c.isAfterLast()) { //בודק את כל השורות בטבלה
+            //שהשם משתמש והסיסמה תואמים למה שהמשתמש הכניס
+            if (c.getString(x1).equals(pref.getString("userName",null)) && c.getString(x2).equals("salary")) {
+                SharedPreferences pref= getSharedPreferences(RegisterFragment.USER_PREF, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor= pref.edit();
+//                editor.putString();
+                editor.apply();
+
+                int should_have_been_added_x_times = 0;
+                //split מפצל את המחרוזת למערך לפי תו ולפי הצורך
+                String[] inserted_at = c.getString(x4).split("/");
+                int day = Integer.parseInt(inserted_at[0]);
+                int month = Integer.parseInt(inserted_at[1]);
+                int year = Integer.parseInt(inserted_at[2]);
+                LocalDateTime temp_date = LocalDateTime.of(year, month, day, 0, 0);
+                while(true){
+                    // todo להוסיף שני בדיקות, הראשונה אם עברנו את התאריך של היום, והשנייה אם הגענו ליום של המשכורת ולטפל בהתאם
+                    if()
+                    temp_date.plusDays(1);
+                }
+            }
+
+            c.moveToNext(); //עובר לשורה הבאה
+        }
+        c.close(); //לסגור גישה
+        db.close(); //לסגור גישה
+
+    }
+
+
 
 
     //בדיקה שכל התווים בהכנסה אכן מספרים והכנסתם לחשבון
@@ -186,6 +232,14 @@ public class HomePage extends AppCompatActivity {
                         Double d1= Double.parseDouble(curSum.getText().toString());
                         Double d2=Double.parseDouble(sIncome);
                         curSum.setText(d1+d2+"");
+                        //מעדכן את הערך העדכני גם בטבלה
+                        dbHelper = new DBHelper(HomePage.this);
+                        db=dbHelper.getWritableDatabase();
+                        cv = new ContentValues();
+                        cv.put(DBHelper.STUD_CURRENT_SUM,curSum.getText().toString());
+                        db.update(DBHelper.TABLE_NAME,cv,DBHelper.STUD_USERNAME+"=?", new String[]{pref.getString("userName", null)});
+                        db.close();
+
                         if(d1+d2==0)
                             curSum.setTextColor(getColor(R.color.white));
                         else{
@@ -200,7 +254,7 @@ public class HomePage extends AppCompatActivity {
                         SharedPreferences.Editor editor= pref.edit();
                         //המחסן פתוח לעריכה
                         editor.putString("sum",curSum.getText().toString());
-                        editor.commit();
+                        editor.apply();
                         sIncome="0";
 
                     }
@@ -212,6 +266,7 @@ public class HomePage extends AppCompatActivity {
         builder.setCancelable(true);
         AlertDialog ad=builder.create();
         ad.show();
+
 
     }
 
@@ -320,6 +375,14 @@ public class HomePage extends AppCompatActivity {
                         Double d2=Double.parseDouble(sOutcome)*(-1);
                         //מעדכן את הסכום אחרי ההוספה
                         curSum.setText(d1+d2+"");
+                        //מעדכן את הדטא בייס
+                        dbHelper = new DBHelper(HomePage.this);
+                        db=dbHelper.getWritableDatabase();
+                        cv = new ContentValues();
+                        cv.put(DBHelper.STUD_CURRENT_SUM,curSum.getText().toString());
+                        db.update(DBHelper.TABLE_NAME,cv,DBHelper.STUD_USERNAME+"=?", new String[]{pref.getString("userName", null)});
+                        db.close();
+
                         //מעדכן את הצבע של הסכום לפייתרה או מינוס גם מצב ביניים-0
                         if(d1+d2==0)
                             curSum.setTextColor(getColor(R.color.white));
@@ -349,7 +412,7 @@ public class HomePage extends AppCompatActivity {
                         cv.put(DBHelper.AC_KIND_OF_ACTION,"outcome");
                         db = dbHelper.getWritableDatabase(); //גישה לכתיבה בטבלה
                         db.insert(DBHelper.TABLE_NAME2, null, cv);
-                        db.close(); //סגירת הגישה
+
                     }
                 }
             }
@@ -381,6 +444,14 @@ public class HomePage extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 curSum.setText(Double.parseDouble(curSum.getText().toString())+Double.parseDouble(sOutcome)*(-1)+"");
+                //מעדכן את הערך בטבלה
+                dbHelper = new DBHelper(HomePage.this);
+                db=dbHelper.getWritableDatabase();
+                cv = new ContentValues();
+                cv.put(DBHelper.STUD_CURRENT_SUM,curSum.getText().toString());
+                db.update(DBHelper.TABLE_NAME,cv,DBHelper.STUD_USERNAME+"=?", new String[]{pref.getString("userName", null)});
+                db.close();
+
                 curSum.setTextColor(getColor(R.color.red));
                 //מכניס כל פעם את הערך העדכני והסכום שיש למשתמש כדי שכשהוא פותח את האפליקציה זה יראה לו אותו
                 SharedPreferences.Editor editor= pref.edit();
@@ -399,7 +470,7 @@ public class HomePage extends AppCompatActivity {
                 cv.put(DBHelper.AC_KIND_OF_ACTION,"outcome");
                 db = dbHelper.getWritableDatabase(); //גישה לכתיבה בטבלה
                 db.insert(DBHelper.TABLE_NAME2, null, cv);
-                db.close(); //סגירת הגישה
+
             }
         });
         //עיצוב הכפתור

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ExtraOptionsForUser"
+    android:gravity="center"
+    android:layout_marginTop="20dp"
+    android:background="@color/black"
+    >
+
+    <TextView
+        android:id="@+id/tV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="36dp"
+        android:textColor="@color/white"
+        android:textSize="30dp"
+        android:text="There are some other options you can use:"
+        android:layout_marginBottom="60dp"
+        />
+
+    <Button
+        android:id="@+id/btnSalary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:text="Insert date of salary"
+        android:layout_marginBottom="16dp"
+        />
+
+    <Button
+        android:id="@+id/btnFutureSaving"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:text="Insert future saving" />
+
+    <Button
+        android:id="@+id/btnConfirmAndSave"
+        android:layout_width="110dp"
+        android:layout_height="73dp"
+        android:layout_marginTop="80dp"
+        android:background="@drawable/circle"
+        android:backgroundTint="@color/white"
+        android:text="finish"
+        android:textColor="@color/black"
+        android:textSize="20dp" />
+</LinearLayout>

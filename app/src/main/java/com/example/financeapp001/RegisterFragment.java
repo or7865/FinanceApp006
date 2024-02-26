@@ -79,7 +79,7 @@ public class RegisterFragment extends Fragment {
                     cv.put(DBHelper.STUD_USERNAME,u.getUser());
                     cv.put(DBHelper.STUD_PASS,u.getPass());
                     cv.put(DBHelper.STUD_GENDER,u.getGender());
-                    cv.put(DBHelper.STUD_DATE_OF_SALARY,"");
+                    cv.put(DBHelper.STUD_CURRENT_SUM,0);
                     db = dbHelper.getWritableDatabase(); //גישה לכתיבה בטבלה
                     db.insert(DBHelper.TABLE_NAME, null, cv);
                     db.close(); //סגירת הגישה

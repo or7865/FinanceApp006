@@ -3,7 +3,7 @@ package com.example.financeapp001;
 import androidx.annotation.NonNull;
 
 public class User {
-    private String  name,LastName,user,pass,gender;
+    private final String  name,LastName,user,pass,gender;
 
 
     //בנאי
