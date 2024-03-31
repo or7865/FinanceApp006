@@ -66,7 +66,7 @@ public class ExtraOptionsForUser extends AppCompatActivity {
         builder.setTitle("Attention!");
         builder.setMessage(pref.getString("name",null)+" "+"if you receive a monthly salary,you can pick here the day of your entry :");
         Spinner op=new Spinner(context);
-        String [] dates={"1","10","15"};
+        String [] dates={"1","10","15","25"};
         //אדפטר ששומר בתוכו את התצוגה של הספינר הדיפולטית ואת המערך שצריך להציג על פניה שזה התאריכים שבהן יכולה המשכורת להיכנס
         ArrayAdapter<String> ad = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, dates);
         ad.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

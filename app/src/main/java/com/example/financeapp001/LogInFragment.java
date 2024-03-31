@@ -60,7 +60,7 @@ public class LogInFragment extends Fragment {
                     startActivity(go);
                 }
                 else
-                    Toast.makeText(getActivity(), "user or password incorrect", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "user or password incorrect", Toast.LENGTH_LONG).show();
             }
         });
         // Inflate the layout for this fragment

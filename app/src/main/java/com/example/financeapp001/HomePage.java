@@ -3,6 +3,7 @@ package com.example.financeapp001;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
@@ -14,6 +15,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -24,13 +26,15 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 
 public class HomePage extends AppCompatActivity {
-    TextView curSum,moreOp,tip;
+    TextView curSum,moreOp,tip,cdtTextView;
     Button input,remove,info;
     String sIncome="0";
     String sOutcome="0";
@@ -42,9 +46,13 @@ public class HomePage extends AppCompatActivity {
     ContentValues cv;
     LocalDateTime tmp;
     String targetDate;
+    CountDownTimer cdt;
+    long miliLeft;
 
 
 
+
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +66,7 @@ public class HomePage extends AppCompatActivity {
         input=findViewById(R.id.btnInput);
         remove=findViewById(R.id.btnRemove);
         info=findViewById(R.id.btnInfo);
+        cdtTextView=findViewById(R.id.tvCdt);
 
         pref = getSharedPreferences(RegisterFragment.USER_PREF, Context.MODE_PRIVATE);
 
@@ -96,20 +105,27 @@ public class HomePage extends AppCompatActivity {
             }
         });
 
+        countDownTimerSalaryUpdate();
+
     }
+
+
 
     //מכניסה את המשכורת כל חודש באופן אוטומטי
     public void handleSalary(){
-        String today = DateTimeFormatter.ofPattern("dd/MM/yyyy").format(LocalDateTime.now());
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String today = dateTimeFormatter.format(LocalDateTime.now());
 
         dbHelper = new DBHelper(HomePage.this); //יצירת עצם חדש
         db = dbHelper.getWritableDatabase(); //לקרוא מהטבלה
-        Cursor c = db.query(DBHelper.TABLE_NAME, null, null, null, null, null, null, null);
+        Cursor c = db.query(DBHelper.TABLE_NAME2, null, null, null, null, null, null, null);
         c.moveToFirst();
         int x1 = c.getColumnIndex(DBHelper.AC_USER);
         int x2= c.getColumnIndex(DBHelper.AC_KIND_OF_ACTION);
         int x3= c.getColumnIndex(DBHelper.AC_SALARY_ADDED_COUNTER);
         int x4= c.getColumnIndex(DBHelper.AC_INSERT_TIME);
+        int x5= c.getColumnIndex(DBHelper.AC_SALARY_ACCOUNT_DATE);
+        int x6= c.getColumnIndex(DBHelper.AC_SUM);
 
         while (!c.isAfterLast()) { //בודק את כל השורות בטבלה
             //שהשם משתמש והסיסמה תואמים למה שהמשתמש הכניס
@@ -126,10 +142,29 @@ public class HomePage extends AppCompatActivity {
                 int month = Integer.parseInt(inserted_at[1]);
                 int year = Integer.parseInt(inserted_at[2]);
                 LocalDateTime temp_date = LocalDateTime.of(year, month, day, 0, 0);
-                while(true){
-                    // todo להוסיף שני בדיקות, הראשונה אם עברנו את התאריך של היום, והשנייה אם הגענו ליום של המשכורת ולטפל בהתאם
-                    if()
+
+                int accountDay = c.getInt(x5);
+
+                while(!dateTimeFormatter.format(temp_date).equals(today)){
+                    // להוסיף שני בדיקות, הראשונה אם עברנו את התאריך של היום, והשנייה אם הגענו ליום של המשכורת ולטפל בהתאם
+                    if(temp_date.getDayOfMonth() == accountDay)
+                        should_have_been_added_x_times++;
+
                     temp_date.plusDays(1);
+                }
+
+                if(should_have_been_added_x_times != Integer.parseInt(c.getString(x3))){
+                    int moneyToAdd = (should_have_been_added_x_times - Integer.parseInt(c.getString(x3)) * Integer.parseInt(c.getString(x6)));
+                    DBHelper users = new DBHelper(HomePage.this);
+                    SQLiteDatabase userDB = users.getWritableDatabase();
+
+                    //צריך לשנות את הסכום הכולל בעמודה של קארנט סאם אצל היוזר הנוכחי וצריך לשנות את הקאונטר
+                    if (c.getString(x1).equals(pref.getString("userName",null))){
+                        int upDateCurSum=Integer.parseInt(curSum.getText().toString())+Integer.parseInt(c.getString(x6));
+                        curSum.setText(upDateCurSum);
+                        db.update(DBHelper.TABLE_NAME,cv,DBHelper.STUD_CURRENT_SUM+"=?",new String[]{String.valueOf(upDateCurSum)});
+                    }
+
                 }
             }
 
@@ -481,6 +516,70 @@ public class HomePage extends AppCompatActivity {
         AlertDialog ad=build.create();
         ad.show();
     }
+
+
+    //פעולה שכאשר למשתנה יש תאריך של משכורת היא מציגה את הקאונט דאון טיימר שאומר כמה זמן נותר עד שהיא תיכנס לחשבון בימים דקות ושניות
+   //הפעולה מתייחסת רק למשכורת האחרונה שהמשתמש הכניס!!
+    public void countDownTimerSalaryUpdate(){
+        //כי כל פעם שלוחצים על הכפתור של הלהתחיל מההתחלה זה יוצר עצם חדש!! ולכן צריך לגרוס אותו וליצור חדש אחר כךך והוא כבר יתחיל לספור מההתחלה
+        if ((cdt != null)) {
+            cdt.cancel();
+        }
+
+        dbHelper = new DBHelper(HomePage.this);
+        db=dbHelper.getReadableDatabase();
+        String[] arr={DBHelper.AC_USER,DBHelper.AC_SALARY_ACCOUNT_DATE,DBHelper.AC_KIND_OF_ACTION};
+        Cursor c = db.query(dbHelper.TABLE_NAME2, null, null,null,null,null,null );
+        c.moveToFirst();
+        int u = c.getColumnIndex(dbHelper.AC_USER);
+        int d = c.getColumnIndex(dbHelper.AC_SALARY_ACCOUNT_DATE);
+        int k = c.getColumnIndex(dbHelper.AC_KIND_OF_ACTION);
+        String useDayOfSal="";
+        String s=pref.getString("userName",null);
+
+        while (!c.isAfterLast()) { //בודק את כל השורות בטבלה
+            if(c.getString(k).equals("salary") && c.getString(u).equals(s)) {
+                useDayOfSal=c.getString(d).toString();
+                //Toast.makeText(this, "user is:"+u+"\n day is:"+ useDayOfSal, Toast.LENGTH_LONG).show();
+
+            }
+            c.moveToNext(); //עובר לשורה הבאה
+        }
+
+
+        //הדיי של היום והדיי של המשכורת ואם היום של המשכורת לא עבר נראה כמה ימים נותרו עד למשכורת ונמיר את זה לשניות
+        String dateToday = DateTimeFormatter.ofPattern("dd").format(LocalDateTime.now()).toString();
+        int whatIsTheDayToday=Integer.parseInt(dateToday);
+        int udos=Integer.parseInt(useDayOfSal);
+
+        //כדי להפוך למילישניות
+        int iii=(udos-whatIsTheDayToday)*24*60*60*1000;
+        cdt = new CountDownTimer(iii, 60000){
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+                if(udos > whatIsTheDayToday){
+                    //מחלקה שנותנת אפשרות ליצור של תבנית לפי סוג ומספר המספרים שאנו רוצים
+                    NumberFormat f = new DecimalFormat("00");
+                    miliLeft = millisUntilFinished;
+                    //ה long  של הפעולה ממנו נחשב שניות דקות ושעות שיופיעו על גבי הטקסט וויו
+                    long day = (millisUntilFinished /(24*60*60*1000));
+                    long hour = (millisUntilFinished / 3600000)%24;
+                    long min = (millisUntilFinished / 60000) % 60;
+                    //מפעילים את הפורמט על כל השניות דקות ושניות
+                    cdtTextView.setText(f.format(day) + ":" + f.format(hour) + ":" + f.format(min));
+                }
+            }
+            @Override
+            public void onFinish() {
+                cdtTextView.setText("");
+            }
+        }.start();
+
+
+    }
+
+
 
     //הלחצן של החזור למטה בטלפון -התכנות שלו ושל עוד מקשים אחרים
     public boolean onKeyDown(int keyCode, KeyEvent event) {
